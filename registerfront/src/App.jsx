@@ -1,12 +1,13 @@
 import React, {Component} from "react";
-import "bootstrap/dist/css/bootstrap.min.css"
+import "bootstrap/dist/css/bootstrap.min.css";
+import axios from 'axios'
 
 class App extends Component{
     constructor(){
         super()
         this.state = {
             fullName:'',
-            username:'',
+            Username:'',
             email:'',
             password:''
         }
@@ -14,6 +15,7 @@ class App extends Component{
         this.changeUsername = this.changeUsername.bind(this)
         this.changeEmail = this.changeEmail.bind(this)
         this.changePassword = this.changePassword.bind(this)
+        this.onSubmit = this.onSubmit.bind(this)
     }
 
     changeFullName(event){
@@ -24,7 +26,7 @@ class App extends Component{
 
     changeUsername(event){
         this.setState({
-            Username:event.taget.value
+            Username:event.target.value
         })
     }
 
@@ -40,12 +42,36 @@ class App extends Component{
         })
     }
 
+    onSubmit(event){
+        event.preventDefault()
+
+        const registered = {
+            fullName: this.state.fullName,
+            username: this.state.Username,
+            email: this.state.email,
+            password: this.state.password
+        }
+
+        axios.post('http://localhost:4000/app/signup', registered).then((result)=>{
+                console.log('post successful')
+            }).catch((err)=>{
+                console.log('there is an error')
+            })
+
+        this.setState({
+            fullName:'',
+            username:'',
+            email:'',
+            password:''
+        })
+    }
+
     render(){
         return(
             <div>
                 <div className="container">
                     <div className="form-div">
-                        <form>
+                        <form onSubmit={this.onSubmit}>
                             <input type="text"
                             placeholder="Full Name"
                             onChange={this.changeFullName}
@@ -56,7 +82,7 @@ class App extends Component{
                             <input type="text"
                             placeholder="username"
                             onChange={this.changeUsername}
-                            value={this.state.Username}
+                            value={this.state.username}
                             className='form-control form-group'
                             />
 
